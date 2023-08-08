@@ -1,221 +1,291 @@
-#Credits: https://github.com/JasonHinds13/KVMusicPlayer/blob/master/main.py
 
-from kivy.app import App
-from kivy.lang import Builder
-from kivy.uix.popup import Popup
-from kivy.uix.button import Button
-from kivy.uix.widget import Widget
+# from kivy.app import App
+from kivymd.app import MDApp
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivy.properties import NumericProperty, StringProperty
+# from kivymd.uix.button import MDIconButton,MDTextButton
+# from kivy.lang import Builder
+
+# from kivy.uix.button import Button
+# from kivy.uix.floatlayout import FloatLayout
+# from kivy.uix.image import Image,AsyncImage
+from kivy.clock import Clock
+from kivy.core.window import Window
 from kivy.core.audio import SoundLoader
-from kivy.properties import ObjectProperty
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.floatlayout import FloatLayout
-from os import listdir, path
+import random
+import os
+#import time
 
-Builder.load_string('''
-<MusicPlayer>:
+Window.size = (450, 600)
 
-    canvas.before:
-        Color:
-            rgba: 0, 0, .1, 1
-        Rectangle:
-            pos: self.pos
-            size: self.size
-    
-    TextInput:
-        id: direct
-        pos: 0,root.top-35
-        size: root.width-200,35
-        hint_text: 'Enter File Location or Leave Empty to Browse'
-    Button:
-        id: searchBtn
-        text: 'Browse'
-        size: 200,35
-        background_color: 0,.5,1,1
-        pos: root.width-200, root.top-35
-        on_release: root.getSongs()
 
-    ScrollView:
-        size_hint: None, None
-        size: root.width, root.height-135
-        pos: 0, 100
-        GridLayout:
-            id: scroll
-            cols: 2
-            spacing: 10
-            size_hint_y: None
-            row_force_default: True
-            row_default_height: 40
+class MusicPlayer():
+    def __init__(self):
+        self.music_list = []
+        self.saved_music = []
+        self.music_titles = dict()
+        # self.thumbnail_list = []
+        self.number_of_tracks = 0
+        self.track_counter = 0
+        self.thumbnail_url = ""
+        self.song_title = ""
+        self.music_length = 0.0
+        self.current_music_path = ""
+        self.shuffle_play = 1 #on
+        self.sound = None
+        self.play_started = False
+        self.play_ended = False
+        self.playing_pos = 0.0
+        self.player_paused = False
+        self.end_of_list = False
+        self.manual_next = False
+        ######
+        self.load_playlist()
+        #self.load_music_titles()
+        # self.music_ethnic = False
+        if self.number_of_tracks>0:
+            self.play()
 
-    GridLayout:
-        rows: 1
-        pos: 0, 50
-        size: root.width, 50
-        Button:
-            text: '<--'
-            background_color: 0,.5,1,1
-        Button:
-            text: '||'
-            background_color: 0,.5,1,1
-        Button:
-            text: '-->'
-            background_color: 0,.5,1,1
-    Button:
-        id: nowplay
-        text: 'Now Playing'
-        pos: 0,0
-        size: root.width, 50
-        background_color: 0,.5,1,1
-
-    Label:
-        id: status
-        text: ''
-        center: root.center
-
-<ChooseFile>:
-
-    canvas.before:
-        Color:
-            rgba: 0, 0, .4, 1
-        Rectangle:
-            pos: self.pos
-            size: self.size
-    BoxLayout:
-        size: root.size
-        pos: root.pos
-        orientation: "vertical"
-        FileChooserIconView:
-            id: filechooser
-
-        BoxLayout:
-            size_hint_y: None
-            height: 30
-            Button:
-                text: "Cancel"
-                background_color: 0,.5,1,1
-                on_release: root.cancel()
-
-            Button:
-                text: "Select Folder"
-                background_color: 0,.5,1,1
-                on_release: root.select(filechooser.path)
-            
-
-''')
-
-class ChooseFile(FloatLayout):
-    select = ObjectProperty(None)
-    cancel = ObjectProperty(None)
-
-class AudioPlayer(Widget):
-
-    directory = '' #location of songs folder
-    nowPlaying = '' #Song that is currently playing
-
-    def getpath(self):
-        try:
-            f = open("sav.dat","r")
-            self.ids.direct.text = str(f.readline())
-            f.close()
-            self.ids.searchBtn.text = "Scan"
-            self.getSongs()
-        except:
-            self.ids.direct.text = ''
-            
-    def savepath(self, path):
-        f = open("sav.dat","w")
-        f.write(path)
-        f.close()
-
-    def dismiss_popup(self):
-        self._popup.dismiss()
-
-    def fileSelect(self):
-        content = ChooseFile(select=self.select,
-                             cancel=self.dismiss_popup)
-        
-        self._popup = Popup(title="Select Folder", content=content,
-                            size_hint=(0.9, 0.9))
-        self._popup.open()
-
-    def select(self, path):
-        self.directory = path
-        self.ids.direct.text = self.directory
-        self.ids.searchBtn.text = "Scan"
-        self.savepath(self.directory)
-        self.getSongs()
-        self.dismiss_popup()
-
-    def getSongs(self):
-
-        songs = [] #List to hold songs from music directory
-        self.directory = self.ids.direct.text #Directory entered by the user
-
-        if self.directory == '':
-            self.fileSelect()
-
-        #To make sure that the directory ends with a '/'
-        if not self.directory.endswith('/'):
-            self.directory += '/'
-
-        #Check if directory exists
-        if not path.exists(self.directory):
-            self.ids.status.text = 'Folder Not Found'
-            self.ids.status.color = (1,0,0,1)
-
+    def play(self):
+        if self.player_paused:
+            self.sound.play()
+            self.sound.seek(self.playing_pos)
+            self.player_paused = False
         else:
+            self.play_music()
 
-            self.ids.status.text = ''
+    def pause(self):
+        self.playing_pos = self.sound.get_pos()
+        self.player_paused = True
+        self.sound.stop()
 
-            self.ids.scroll.bind(minimum_height=self.ids.scroll.setter('height'))
+    def next(self):
+        if self.sound:            
+            if self.track_counter<len(self.music_list)-1:
+                self.track_counter += 1                
+            else:
+                self.end_of_list = True
+                print("End of list.")
+                # self.track_counter = 0
+            self.sound.stop()
+        else:
+            self.play_music()
 
-            #get mp3 files from directory
-            for fil in listdir(self.directory):
-                if fil.endswith('.mp3'):
-                    songs.append(fil)
+    def previous(self):
+        if self.sound:
+            if self.track_counter>0:
+                self.track_counter -= 1
+            else:
+                self.track_counter = len(self.music_list)-1
+            
+            self.sound.stop()
+        else:
+            self.play_music()
 
-            #If there are no mp3 files in the chosen directory
-            if songs == [] and self.directory != '':
-                self.ids.status.text = 'No Music Found'
-                self.ids.status.color = (1,0,0,1)
-                    
-            songs.sort()
-
-            for song in songs:
-
-                def playSong(bt):
-                    try:
-                        self.nowPlaying.stop()
-                    except:
-                        pass
-                    finally:
-                        self.nowPlaying = SoundLoader.load(self.directory+bt.text+'.mp3')
-                        self.nowPlaying.play()
-                        self.ids.nowplay.text = bt.text
-                    
-                btn = Button(text=song[:-4], on_press=playSong)
-                icon = Button(size_hint_x=None, width=50, background_down="ico.png", background_normal="ico.png")
-
-                #Color Buttons Alternatively
-                if songs.index(song)%2 == 0:
-                    btn.background_color=(0,0,1,1)
-                else:
-                    btn.background_color=(0,0,2,1)
-                    
-                self.ids.scroll.add_widget(icon) #Add icon to layout
-                self.ids.scroll.add_widget(btn) #Add btn to layout
+    def play_next(self):
+        if self.track_counter<len(self.music_list)-1:
+            self.track_counter += 1
+            self.play_music()
     
-class app(App):
-    
-    def build(self):
-        audio = AudioPlayer()
-        audio.getpath()
-        return audio
+    def shuffle(self):
+        if len(self.music_list)>0:
+            if self.shuffle_play:
+                random.shuffle(self.music_list)
+
+    def restart(self):
+        if self.sound:
+            self.track_counter = 0
+            self.end_of_list = False
+            self.sound.stop()
+        else:
+            self.play_music()
+
+    def play_music(self):
+        if self.load_audio():
+            self.sound = SoundLoader.load(self.current_music_path)
+            #self.sound.bind(on_play=self.player_playing,on_stop=self.player_stopped)
+            if self.sound:
+                self.music_length = self.sound.length
+                self.sound.play()
+        else:
+            print("attempting next...")
+            # time.sleep(5)
+            if self.track_counter==0:
+                self.track_counter += 1
+            self.next()
+    #########################    
+    def player_playing(self, obj):
+        self.play_started = True
+        self.play_ended = False
+        self.manual_next = False
+
+    def player_stopped(self, obj):
+        self.play_ended = True
+        self.play_started = False
+
+    def load_audio(self):
+        print(" Track: {}".format(self.track_counter))
+        video_id = self.music_list[self.track_counter]
         
+        path = "./music"
+        f_name = os.path.join(path,video_id+".mp3")
+        img_name = os.path.join(path,video_id+".jpg")
+
+        skip_list = ['oromo','ii','uu','aa','ee','oromiyaa','oroomiyaa','jj']
+
+        if video_id in self.music_list:
+            self.current_music_path = f_name
+            print("F_NAME: "+f_name)
+            if os.path.exists(img_name):
+                self.thumbnail_url = img_name
+            else:
+                self.thumbnail_url = "default_1.png"
+            s_title = ''
+            self.song_title = self.music_titles.get(video_id,s_title)
+            ### I'm just skipping some of the music tracks ...
+            for term in skip_list:
+                if term in self.song_title.lower():
+                    print(self.song_title)
+                    return False
+            return True
+        return False
+
+    def load_playlist(self):
+        #### Downloaded music files are in local disk
+        path = "./music"
+        files = os.listdir(path)
+        lists = set()
+        for f in files:
+            # v_id = f.split('.')[0]
+            lists.add(f.split('.')[0])
+        self.saved_music = list(lists)
+        self.music_list = list(self.saved_music)
+        self.number_of_tracks = len(self.music_list)        
+        # print("#saved music:",len(self.saved_music))
+
+    #def load_music_titles(self):
+    #    file = open('music_titles.json','r')
+    #    jfile = json.load(file) 
+    #    for id in jfile:
+    #    self.music_titles[id] = jfile[id]
+        # print("#titles:",len(self.music_titles))
+    #    file.close()
+
+
+class MainUI(MDBoxLayout):
+
+    manual_next = False
+    play_state = 0
+
+    icon_type = StringProperty("play-outline")
+    shuffle_icon = StringProperty("shuffle")
+    thumbnail_url = StringProperty("default_1.png")
+    song_title = StringProperty("-- Music Title --")
+    song_pos = StringProperty("\n 0.0")
+    num_of_tracks = StringProperty("\n #Tracks: 0")
+    slider_value = NumericProperty(0.0)
+    volume_value = NumericProperty(50)
+    volume_icon = StringProperty("volume-medium")
+    mplayer = MusicPlayer()
+
+    def __init__(self,**kwargs):
+        super(MainUI,self).__init__(**kwargs)
+        # self.mplayer = MusicPlayer()
+        self.play_event = Clock.schedule_interval(self.player_state_callback, 1 / 2.)
+        
+    def play_click(self):
+        # print("Play button clicked.")
+        if self.play_state:
+            self.icon_type = "play-outline"
+            self.play_state = 0
+            self.mplayer.pause()
+        else:
+            self.icon_type = "pause"
+            self.play_state = 1
+            self.song_title = " Loading music ...."
+            self.mplayer.play()
+        self.update_ui()
+
+    def next_click(self):
+        self.mplayer.manual_next = True
+        self.mplayer.next()
+        self.update_ui()  
+
+    def previous_click(self):
+        self.mplayer.manual_next = True
+        self.mplayer.previous()
+        self.update_ui()
+
+    def restart_click(self):
+        self.mplayer.restart()
+        self.update_ui()
+
+    def shuffle_click(self):
+        if self.mplayer.shuffle_play:
+            self.mplayer.shuffle_play = 0 #off
+            self.shuffle_icon = "shuffle"
+        else:
+            self.mplayer.shuffle_play = 1 #on
+            self.shuffle_icon = "shuffle-disabled"
+        self.mplayer.shuffle()
+        # print('shuffle clicked.')
+
+    def update_ui(self):
+        self.thumbnail_url = self.mplayer.thumbnail_url
+        self.song_title = self.mplayer.song_title
+        self.num_of_tracks = "\n #Tracks: "+str(self.mplayer.number_of_tracks)
+        print("CHECK: "+str(self.mplayer.number_of_tracks))
+        # self.song_pos = str(self.mplayer.music_length)
+        
+    def player_state_callback(self,obj):
+        if self.mplayer.play_started:
+            self.update_ui()
+            pos = self.mplayer.sound.get_pos()
+            self.slider_value = 100.0*pos/self.mplayer.music_length
+            minute = int(pos/60)
+            second = int(pos-minute*60)
+            if second<10:
+                second = '0'+str(second)
+            
+            t_min = int(self.mplayer.music_length/60)
+            t_sec = int(self.mplayer.music_length-t_min*60)
+            if t_sec<10:
+                t_sec ='0'+str(t_sec)
+            t_time = str(t_min)+':'+str(t_sec)
+            self.song_pos = '\n'+str(minute)+':'+str(second)+"/"+t_time
+            self.play_state = 1
+            self.icon_type = "pause"
+
+        elif self.mplayer.play_ended:
+            if self.mplayer.player_paused:
+                pass
+            else:
+                if not self.mplayer.end_of_list:
+                    if self.mplayer.manual_next:
+                        self.mplayer.play()
+                        # self.manual_next = False
+                    else:
+                        self.mplayer.play_next()
+
+                    self.update_ui()
+                    # self.thumbnail_url = self.mplayer.thumbnail_url
+                    # self.song_title = self.mplayer.song_title
+                else:
+                    self.play_state = 0
+                    self.mplayer.track_counter = 0
+                    self.icon_type = "play-outline" 
+                
+    def slider_value_change(self,widget):
+        self.slider_value = widget.value
+
+
+class MainApp(MDApp):
+    def build(self):
+        self.theme_cls.theme_style = "Dark"
+        return MainUI()
+
     def on_pause(self):
         return True
-        
-    def on_resume(self):
-        pass
-        
+
 if __name__ == "__main__":
-    app().run()
+    MainApp().run()
