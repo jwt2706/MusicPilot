@@ -1,6 +1,7 @@
 {
     "name": "MusicPilot",
     "short_name": "MusicPilot",
+    "description": "Craft and curate customized playlists for every mood with your own library, all locally.",
     "start_url": "/?home=true",
     "icons": [
         {

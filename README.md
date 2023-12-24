@@ -7,4 +7,4 @@ todo:
 - tell emotion/mood from a custom description given by the user
 - create android apk with webview
 
-use electron? can you deploy on android with that?
+the icon image is just temporary. gonna make a better one eventually

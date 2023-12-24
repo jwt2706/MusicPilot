@@ -1,7 +1,7 @@
 {
   "name": "musicpilot",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "Craft and curate customized playlists for every mood with your own library, all locally.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,8 +17,10 @@
   },
   "homepage": "https://github.com/jwt2706/MusicPilot#readme",
   "dependencies": {
+    "autoprefixer": "^10.4.16",
     "essential.js": "^0.7.0",
     "pwa-asset-generator": "^6.3.1",
-    "workbox-cli": "^7.0.0"
+    "workbox-cli": "^7.0.0",
+    "workbox-sw": "^7.0.0"
   }
 }
