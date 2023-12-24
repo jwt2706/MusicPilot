@@ -1,7 +1,11 @@
+# MusicPilot
+Craft and curate customized playlists for every mood with your own library, all locally.
+
+### Dev
 to run:
 `npx serve`
 
-todo:
+### Todo
 - add license that reflects what essentia.js says i can use
 - everything else
 - tell emotion/mood from a custom description given by the user
