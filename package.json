@@ -18,8 +18,7 @@
   "homepage": "https://github.com/jwt2706/MusicPilot#readme",
   "dependencies": {
     "essential.js": "^0.7.0",
-    "gh-pages": "^6.1.1",
-    "http-server": "^14.1.1",
-    "vite": "^5.0.10"
+    "pwa-asset-generator": "^6.3.1",
+    "workbox-cli": "^7.0.0"
   }
 }
