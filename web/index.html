@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>MusicPilot</title>
+        <style src="style.css"></style>
+    </head>
+    <body>
+        <button onclick="fetchTime()">
+            Fetch browser date
+        </button>
+        <div id="showTime"></div>
+        
+        <h3>Weather</h3>
+        <form>
+            <label for="weatherOptions">Choose an option:</label>
+            <select name="weatherOptions" id="weatherOptions">
+              <option value="clear">clear</option>
+              <option value="clouds">clouds</option>
+              <option value="rain">rain</option>
+              <option value="thunderstorm">thunderstorm</option>
+              <option value="snow">snow</option>
+              <option value="mist">mist</option>
+              <!-- https://openweathermap.org/weather-conditions -->
+            </select>
+            <p>Select the intensity:</p>
+            <div class="slidecontainer">
+                <input type="range" min="1" max="100" value="50" class="slider" id="weatherIntensity">
+            </div>
+            <p id="weatherIntensityValue"></p>
+            <input type="submit" value="Submit">
+        </form>
+
+        <script src="script.js"></script>
+    </body>
+</html>
