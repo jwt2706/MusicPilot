@@ -8,6 +8,6 @@ Craft and curate customized playlists for every mood with your own library, all 
 
 The plan:
 
-1. basic genra classification
+1. basic genre classification
 2. mix in some other things to enhance selection
 3. user feedback/input
