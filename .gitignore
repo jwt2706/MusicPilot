@@ -2,3 +2,4 @@ sav.dat
 __pycache__
 /old
 /node_modules
+venv
