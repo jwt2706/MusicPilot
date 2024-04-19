@@ -2,6 +2,14 @@ import essentia.standard as es
 from sklearn.cluster import KMeans
 import os, json
 
+def convert_range_to_numerical(range_str):
+    if range_str == "Variable":
+        return [-float('inf'), float('inf')]
+    elif "-" in range_str:
+        return [float(x) for x in range_str.split("-")]
+    else:
+        return [float(range_str), float(range_str)]
+
 def analyze_audio_files(file_paths):
     analyzed_files = []
 
@@ -42,21 +50,26 @@ def analyze_audio_files(file_paths):
 
     return analyzed_files
 
-def generate_playlists(analyzed_files, themes):
+def generate_playlists(analyzed_files, moods):
+    if len(analyzed_files) < len(moods):
+        print(f"Warning: Not enough songs to create playlists for all moods. Only creating playlists for the first {len(analyzed_files)} moods.")
+        moods = moods[:len(analyzed_files)]
+
     # Extract the features from the analyzed files
     features = [list(file.values())[1:] for file in analyzed_files]
 
     # Use K-means clustering to group similar songs together
-    kmeans = KMeans(n_clusters=len(themes))
+    kmeans = KMeans(n_clusters=len(moods))
     kmeans.fit(features)
 
     # Create playlists from the clusters of similar songs
-    playlists = {theme: [] for theme in themes}
+    playlists = {mood["name"]: [] for mood in moods}
     unused_tracks = set(file['file_path'] for file in analyzed_files)
     for i, label in enumerate(kmeans.labels_):
-        for theme, criteria in themes.items():
+        for mood in moods:
+            criteria = {k: convert_range_to_numerical(v) for k, v in mood.items() if k != "name"}
             if all(criteria.get(feature, [-float('inf'), float('inf')])[0] <= analyzed_files[i][feature] <= criteria.get(feature, [-float('inf'), float('inf')])[1] for feature in analyzed_files[i] if feature != 'file_path'):
-                playlists[theme].append(analyzed_files[i]['file_path'])
+                playlists[mood["name"]].append(analyzed_files[i]['file_path'])
                 unused_tracks.remove(analyzed_files[i]['file_path'])
 
     # Only keep playlists with at least 10 songs
@@ -65,9 +78,9 @@ def generate_playlists(analyzed_files, themes):
     return playlists, list(unused_tracks)
 
 def main():
-    # Load themes from JSON file
-    with open('themes.json', 'r') as f:
-        themes = json.load(f)
+    # Load moods from JSON file
+    with open('moods.json', 'r') as f:
+        moods = json.load(f)["moods"]
 
     # Directory containing the audio files to analyze
     directory = 'test'
@@ -81,7 +94,7 @@ def main():
 
     # Generate playlists
     print('Generating playlists...')
-    playlists, unused_tracks = generate_playlists(analyzed_files, themes)
+    playlists, unused_tracks = generate_playlists(analyzed_files, moods)
 
     # Print out the playlists
     for theme, playlist in playlists.items():

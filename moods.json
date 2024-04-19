@@ -1,0 +1,44 @@
+{
+  "moods": [
+    {
+      "name": "Happy",
+      "bpm": "120-150",
+      "key": "Major",
+      "loudness": "Medium to High",
+      "spectral_centroid": "High",
+      "zero_crossing_rate": "Medium to High"
+    },
+    {
+      "name": "Sad",
+      "bpm": "60-100",
+      "key": "Minor",
+      "loudness": "Low to Medium",
+      "spectral_centroid": "Low",
+      "zero_crossing_rate": "Low to Medium"
+    },
+    {
+      "name": "Relaxed",
+      "bpm": "60-100",
+      "key": "Major or Minor",
+      "loudness": "Low",
+      "spectral_centroid": "Low",
+      "zero_crossing_rate": "Low"
+    },
+    {
+      "name": "Energetic",
+      "bpm": "120-180",
+      "key": "Major",
+      "loudness": "High",
+      "spectral_centroid": "High",
+      "zero_crossing_rate": "High"
+    },
+    {
+      "name": "Chaotic",
+      "bpm": "Variable",
+      "key": "Variable",
+      "loudness": "High",
+      "spectral_centroid": "High",
+      "zero_crossing_rate": "High"
+    }
+  ]
+}
