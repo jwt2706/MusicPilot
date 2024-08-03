@@ -22,5 +22,7 @@ def serve_assets(path):
 def serve_icons(path):
     return send_from_directory(f'{app.static_folder}/icons', path)
 
+#@app.route('/api/analyze', methods=['POST']) ....
+
 if __name__ == '__main__':
     app.run(debug=True)
