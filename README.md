@@ -1,6 +1,6 @@
 # MusicPilot
 
-Craft and curate customized playlists for every mood with your own library, all locally.
+Generate customized playlists for every mood with your own library, all locally.
 
 ### Todo
 
