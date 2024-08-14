@@ -15,5 +15,20 @@
   "devDependencies": {
     "electron": "^31.3.1",
     "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.example.musicpilot",
+    "productName": "MusicPilot",
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "index.js",
+      "package.json"
+    ],
+    "linux": {
+      "target": [
+        "AppImage"
+      ]
+    }
   }
 }
