@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  build-linux:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,65 +27,11 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Package on Linux
-        run: npm run package-linux
+      - name: Run electron-builder
+        run: npx electron-builder
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: MusicPilot-linux
-          path: dist/*
-
-  build-macos:
-    runs-on: macos-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: "18"
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build
-        run: npm run build
-
-      - name: Package on macOS
-        run: npm run package-mac
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: MusicPilot-macos
-          path: dist/*
-
-  build-windows:
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: "18"
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build
-        run: npm run build
-
-      - name: Package on Windows
-        run: npm run package-win
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: MusicPilot-windows
+          name: MusicPilot
           path: dist/*
