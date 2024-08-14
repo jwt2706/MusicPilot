@@ -28,7 +28,7 @@ jobs:
         run: npm run build
 
       - name: Run electron-builder
-        run: npx electron-builder
+        run: npx electron-builder --pubish never
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2

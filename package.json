@@ -17,7 +17,6 @@
     "electron-builder": "^24.13.3"
   },
   "build": {
-    "publish": "never",
     "appId": "com.example.musicpilot",
     "productName": "MusicPilot",
     "files": [
