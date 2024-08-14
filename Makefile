@@ -1,12 +1,12 @@
-.PHONY: dev build
+.PHONY: dev build clean
 
 dev:
 	@echo "Dev mode..."
-	@python app.py
+	@python3 -m engine.main
 
 build:
 	@echo "Building..."
-	@pyinstaller --onefile app.py
+	@pyinstaller --onefile engine/main.py --name MusicPilot
 
 clean:
 	@echo "Cleaning..."
