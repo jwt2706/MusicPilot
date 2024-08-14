@@ -1,0 +1,14 @@
+{
+  "name": "musicpilot",
+  "version": "1.0.0",
+  "description": "Generate customized playlists for every mood with your own library, all locally.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "electron ."
+  },
+  "author": "jwt2706",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "electron": "^31.3.1"
+  }
+}
