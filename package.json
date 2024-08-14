@@ -1,0 +1,49 @@
+{
+  "name": "musicpilot",
+  "version": "1.0.0",
+  "description": "Generate customized playlists for every mood with your own library, all locally.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "electron .",
+    "build": "electron-builder"
+  },
+  "author": "jwt2706",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "electron": "^31.3.1",
+    "electron-builder": "^23.0.0"
+  },
+  "build": {
+    "appId": "com.jwt2706.musicpilot",
+    "productName": "MusicPilot",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "index.js",
+      "index.html",
+      "preload.js",
+      "app.py",
+      "engine/**/*"
+    ],
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Utility"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "zip"
+      ]
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    }
+  }
+}
