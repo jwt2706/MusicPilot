@@ -1,4 +1,5 @@
 __pycache__
-node_modules
-venv
+build
 dist
+venv
+app.spec
