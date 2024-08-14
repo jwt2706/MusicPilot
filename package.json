@@ -1,0 +1,19 @@
+{
+  "name": "musicpilot",
+  "version": "1.0.0",
+  "description": "Generate customized playlists for every mood with your own library, all locally.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "electron .",
+    "build": "electron-builder",
+    "package-linux": "electron-builder --linux",
+    "package-mac": "electron-builder --mac",
+    "package-win": "electron-builder --win"
+  },
+  "author": "jwt2706",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "electron": "^31.3.1",
+    "electron-builder": "^24.13.3"
+  }
+}
