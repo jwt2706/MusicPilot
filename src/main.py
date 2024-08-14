@@ -1,19 +1,15 @@
 import tkinter as tk
+from player.ui import MusicPlayerUI
 
-def say_hello():
-    print("Hello, World!")
+def main():
+    # Create the main window
+    root = tk.Tk()
 
-# Create the main window
-root = tk.Tk()
-root.title("Hello Tkinter")
+    # Initialize the MusicPlayerUI
+    app = MusicPlayerUI(root)
 
-# Create a label
-label = tk.Label(root, text="Hello, Tkinter!")
-label.pack(pady=10)
+    # Run the application
+    root.mainloop()
 
-# Create a button
-button = tk.Button(root, text="Say Hello", command=say_hello)
-button.pack(pady=10)
-
-# Run the application
-root.mainloop()
+if __name__ == "__main__":
+    main()

@@ -2,11 +2,11 @@
 
 dev:
 	@echo "Dev mode..."
-	@python3 -m engine.main
+	PYTHONPATH=src python3 -m src.main
 
 build:
 	@echo "Building..."
-	@pyinstaller --onefile engine/main.py --name MusicPilot
+	@pyinstaller --onefile src/main.py --name MusicPilot
 
 clean:
 	@echo "Cleaning..."
