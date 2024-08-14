@@ -1,4 +1,4 @@
-name: Build Electron App
+name: Build
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
+      - name: Node
         uses: actions/setup-node@v2
         with:
           node-version: "18"
@@ -27,10 +27,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build Electron app
+      - name: Build
         run: npm run build
 
-      - name: Package Electron app
+      - name: Packaging
         run: |
           if [ ${{ matrix.os }} == 'ubuntu-latest' ]; then
             npm run package-linux
@@ -43,7 +43,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: electron-app-${{ matrix.os }}
+          name: MusicPilot-${{ matrix.os }}
           path: |
             dist/*.exe
             dist/*.msi
