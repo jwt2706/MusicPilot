@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "electron .",
     "build": "electron-builder",
-    "package-linux": "electron-builder --linux",
-    "package-mac": "electron-builder --mac",
-    "package-win": "electron-builder --win"
+    "package-linux": "electron-builder --linux --publish never",
+    "package-mac": "electron-builder --mac --publish never",
+    "package-win": "electron-builder --win --publish never"
   },
   "author": "jwt2706",
   "license": "GPL-3.0",

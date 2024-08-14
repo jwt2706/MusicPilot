@@ -2,6 +2,9 @@
 
 Generate customized playlists for every mood with your own library, all locally.
 
+> [!NOTE]
+> Publishing is currently disabled for now.... maybe something to do in the future 👀
+
 ### Project Structure
 
 1. `pwa/`
