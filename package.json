@@ -22,7 +22,7 @@
     "files": [
       "dist/**/*",
       "node_modules/**/*",
-      "main.js",
+      "index.js",
       "package.json"
     ],
     "linux": {
