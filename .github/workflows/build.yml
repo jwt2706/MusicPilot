@@ -1,4 +1,4 @@
-name: Build
+name: Build Electron App
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Node
+      - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: "18"
@@ -30,15 +30,17 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Packaging
-        run: |
-          if [ ${{ matrix.os }} == 'ubuntu-latest' ]; then
-            npm run package-linux
-          elif [ ${{ matrix.os }} == 'macos-latest' ]; then
-            npm run package-mac
-          elif [ ${{ matrix.os }} == 'windows-latest' ]; then
-            npm run package-win
-          fi
+      - name: Package on Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: npm run package-linux
+
+      - name: Package on macOS
+        if: matrix.os == 'macos-latest'
+        run: npm run package-mac
+
+      - name: Package on Windows
+        if: matrix.os == 'windows-latest'
+        run: npm run package-win
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
