@@ -1,4 +1,4 @@
-name: Build Electron App
+name: Build
 
 on:
   push:
@@ -9,11 +9,8 @@ on:
       - main
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+  build-linux:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -31,26 +28,64 @@ jobs:
         run: npm run build
 
       - name: Package on Linux
-        if: matrix.os == 'ubuntu-latest'
         run: npm run package-linux
 
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: MusicPilot-linux
+          path: dist/*
+
+  build-macos:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
       - name: Package on macOS
-        if: matrix.os == 'macos-latest'
         run: npm run package-mac
 
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: MusicPilot-macos
+          path: dist/*
+
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
       - name: Package on Windows
-        if: matrix.os == 'windows-latest'
         run: npm run package-win
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: MusicPilot-${{ matrix.os }}
-          path: |
-            dist/*.exe
-            dist/*.msi
-            dist/*.dmg
-            dist/*.pkg
-            dist/*.AppImage
-            dist/*.deb
-            dist/*.rpm
+          name: MusicPilot-windows
+          path: dist/*
